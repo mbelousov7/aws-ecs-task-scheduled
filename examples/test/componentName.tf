@@ -109,7 +109,7 @@ locals {
 # - it is better to store vars values in one or two places(<ENV>.tfvars file and variables.tf)
 
 module "ecs_task_security_group" {
-                        
+
   source        = "git::https://gitlab.com/mb-terraform-modules/aws-security-group.git?ref=main"
   vpc_id        = var.vpc_config.vpc_id
   ingress_rules = var.security_group.ingress_rules
