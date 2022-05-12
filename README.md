@@ -4,7 +4,8 @@ terrafrom config example:
 
 ```
 module "ecs_task_security_group" {
-  source        = "git::https://gitlab.sdp.refinitiv.com/204558/terraform-libs/tf-aws-security-group.git?ref=init"
+
+  source        = "git::https://gitlab.com/mb-terraform-modules/aws-security-group.git?ref=main"
   vpc_id        = var.vpc_config.vpc_id
   ingress_rules = var.security_group.ingress_rules
   egress_rules  = var.security_group.egress_rules
@@ -12,7 +13,7 @@ module "ecs_task_security_group" {
 }
 
 module "ecs_task_definition" {
-  source                      = "git::https://gitlab.sdp.refinitiv.com/204558/terraform-libs/tf-aws-ecs-task-definition.git?ref=develop"
+  source                      = "git::https://gitlab.com/mb-terraform-modules/aws-ecs-task-definition.git?ref=main"
   aws_region                  = var.region
   container_name              = var.container_name
   container_image             = var.container_image
@@ -23,6 +24,7 @@ module "ecs_task_definition" {
   labels                      = local.labels
 }
 
+
 module "ecs_task_scheduled" {
   source = "../.."
   task_config = {
@@ -30,11 +32,11 @@ module "ecs_task_scheduled" {
     task_definition_arn    = module.ecs_task_definition.task_definition_arn
     task_security_group_id = module.ecs_task_security_group.id
   }
-  vpc_config                   = var.vpc_config
-  event_schedule_expression    = "rate(5 minutes)"
-  scheduled_role_policy_arns   = local.cloudteam_policy_arns
-  aws_cloudwatch_log_group_arn = module.ecs_task_definition.aws_cloudwatch_log_group_arn
-  labels = local.labels
+
+  vpc_config                 = var.vpc_config
+  event_schedule_expression  = "rate(5 minutes)"
+  scheduled_role_policy_arns = local.cloudteam_policy_arns
+  labels                     = local.labels
 }
 ```
 more info see [examples/test](examples/test)
