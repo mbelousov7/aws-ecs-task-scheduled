@@ -16,12 +16,12 @@ variable "region" {
 # in example using dev account
 variable "account_number" {
   type    = string
-  default = "942358500784"
+  default = "12345678910"
 }
 
 variable "labels" {
   default = {
-    prefix = "a204558"
+    prefix = "myproject"
     stack  = "stackName"
   }
 }
@@ -81,7 +81,7 @@ variable "task_role_policy_statements" {
 }
 
 variable "cloudteam_policy_names" {
-  default = ["a204161-service-policy-global-deny-1", "a204161-service-policy-global-deny-2"]
+  default = ["cloud-service-policy-global-deny-1", "cloud-service-policy-global-deny-2"]
 }
 
 # <ENV>.tfvars end
@@ -109,8 +109,7 @@ locals {
 # - it is better to store vars values in one or two places(<ENV>.tfvars file and variables.tf)
 
 module "ecs_task_security_group" {
-
-  source        = "git::https://gitlab.com/mb-terraform-modules/aws-security-group.git?ref=main"
+  source        = "git::https://gitlab.com:/mb-terraform-modules/aws-security-group.git?ref=main"
   vpc_id        = var.vpc_config.vpc_id
   ingress_rules = var.security_group.ingress_rules
   egress_rules  = var.security_group.egress_rules
@@ -118,7 +117,7 @@ module "ecs_task_security_group" {
 }
 
 module "ecs_task_definition" {
-  source                      = "git::https://gitlab.com/mb-terraform-modules/aws-ecs-task-definition.git?ref=main"
+  source                      = "git::https://gitlab.com:/mb-terraform-modules/aws-ecs-task-definition.git?ref=main"
   aws_region                  = var.region
   container_name              = var.container_name
   container_image             = var.container_image
