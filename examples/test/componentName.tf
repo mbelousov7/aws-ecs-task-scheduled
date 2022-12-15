@@ -109,7 +109,7 @@ locals {
 # - it is better to store vars values in one or two places(<ENV>.tfvars file and variables.tf)
 
 module "ecs_task_security_group" {
-  source        = "git::https://gitlab.com:/mb-terraform-modules/aws-security-group.git?ref=main"
+  source        = "git::https://github.com/mbelousov7/aws-security-group.git?ref=main"
   vpc_id        = var.vpc_config.vpc_id
   ingress_rules = var.security_group.ingress_rules
   egress_rules  = var.security_group.egress_rules
@@ -117,7 +117,7 @@ module "ecs_task_security_group" {
 }
 
 module "ecs_task_definition" {
-  source                      = "git::https://gitlab.com:/mb-terraform-modules/aws-ecs-task-definition.git?ref=main"
+  source                      = "git::https://github.com/mbelousov7/aws-ecs-task-definition.git?ref=main"
   aws_region                  = var.region
   container_name              = var.container_name
   container_image             = var.container_image
@@ -127,7 +127,6 @@ module "ecs_task_definition" {
   task_role_policy_statements = var.task_role_policy_statements
   labels                      = local.labels
 }
-
 
 module "ecs_task_scheduled" {
   source = "../.."

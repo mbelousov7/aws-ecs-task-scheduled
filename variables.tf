@@ -33,6 +33,20 @@ variable "ecs_cluster_name" {
   default     = "default"
 }
 
+variable "ecs_cluster_new" {
+  type        = bool
+  description = <<-EOT
+      optionally set to false, then no new ecs cluster will be created
+    EOT
+  default     = true
+}
+
+variable "aws_ecs_cluster_containerInsights" {
+  type        = string
+  description = "option to enabled | disabled CloudWatch Container Insights for a cluster"
+  default     = "enabled"
+}
+
 variable "scheduled_iam_role_name" {
   description = <<-EOT
       optionally define a custom value for the iam role name and tag=Name parameter
@@ -44,12 +58,29 @@ variable "scheduled_iam_role_name" {
 
 ########################################  configs ########################################
 
+variable "event_target_enabled" {
+  type        = bool
+  description = "using for disaster recovery design if we don't need to have second running task in parallel"
+  default     = true
+}
+
+variable "launch_type" {
+  type        = string
+  description = "The launch type on which to run your service. Valid values are `EC2` and `FARGATE`"
+  default     = "FARGATE"
+}
+
+variable "task_count" {
+  type        = number
+  description = "Number of instances of the task definition to place and keep running."
+  default     = 1
+}
+
 variable "event_schedule_expression" {
   type        = string
   description = "value for schedule_expression parameter in aws_cloudwatch_event_rule"
   default     = "rate(5 minutes)"
 }
-
 
 variable "permissions_boundary" {
   type        = string

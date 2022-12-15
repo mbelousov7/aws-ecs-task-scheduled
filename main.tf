@@ -5,9 +5,19 @@ locals {
   ) : var.event_name
 
   ecs_cluster_name = var.ecs_cluster_name == "default" ? (
-    "${var.labels.prefix}-${var.labels.stack}-${var.labels.component}-cl-${var.labels.env}"
+    "${var.labels.prefix}-${var.labels.stack}-${var.labels.component}-cl-${data.aws_region.current.name}-${var.labels.env}"
   ) : var.ecs_cluster_name
 
+  ecs_cluster_arn = var.ecs_cluster_new == true ? join("", aws_ecs_cluster.ecs_cluster.*.arn) : join("", data.aws_ecs_cluster.ecs_cluster.*.arn)
+
+}
+
+data "aws_region" "current" {}
+
+
+data "aws_ecs_cluster" "ecs_cluster" {
+  count        = var.ecs_cluster_new == true ? 0 : 1
+  cluster_name = local.ecs_cluster_name
 }
 
 resource "aws_cloudwatch_event_rule" "scheduled_task" {
@@ -17,7 +27,12 @@ resource "aws_cloudwatch_event_rule" "scheduled_task" {
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = local.ecs_cluster_name
+  count = var.ecs_cluster_new == true ? 1 : 0
+  name  = local.ecs_cluster_name
+  setting {
+    name  = "containerInsights"
+    value = var.aws_ecs_cluster_containerInsights
+  }
   tags = merge(
     var.labels,
     var.tags,
@@ -26,16 +41,17 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 }
 
 resource "aws_cloudwatch_event_target" "scheduled_task" {
+  count     = var.event_target_enabled == true ? 1 : 0
   rule      = aws_cloudwatch_event_rule.scheduled_task.name
   target_id = local.event_name
-  arn       = aws_ecs_cluster.ecs_cluster.arn
+  arn       = local.ecs_cluster_arn
   role_arn  = aws_iam_role.scheduled_iam_role.arn
   input     = "{}"
 
   ecs_target {
-    task_count          = 1
+    task_count          = var.task_count
     task_definition_arn = var.task_config.task_definition_arn
-    launch_type         = "FARGATE"
+    launch_type         = var.launch_type
     platform_version    = "LATEST"
 
     network_configuration {
