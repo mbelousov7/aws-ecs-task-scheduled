@@ -60,7 +60,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.9.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
@@ -74,30 +74,38 @@ No modules.
 | [aws_cloudwatch_event_target.scheduled_task](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_ecs_cluster.ecs_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster) | resource |
 | [aws_iam_role.scheduled_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy.scheduled_iam_role_logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy.scheduled_iam_role_policies](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy_attachment.scheduled_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.scheduled_iam_role_default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_ecs_cluster.ecs_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecs_cluster) | data source |
 | [aws_iam_policy_document.scheduled_iam](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_cloudwatch_log_group_arn"></a> [aws\_cloudwatch\_log\_group\_arn](#input\_aws\_cloudwatch\_log\_group\_arn) | aws cloudwatch log group arn for task logs, used in aws\_iam\_role\_policy | `string` | n/a | yes |
+| <a name="input_aws_ecs_cluster_containerInsights"></a> [aws\_ecs\_cluster\_containerInsights](#input\_aws\_ecs\_cluster\_containerInsights) | option to enabled \| disabled CloudWatch Container Insights for a cluster | `string` | `"enabled"` | no |
 | <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | optionally define a custom value for the ecs cluster name and tag=Name parameter<br>in aws\_ecs\_cluster. By default, it is defined as a construction from var.labels | `string` | `"default"` | no |
+| <a name="input_ecs_cluster_new"></a> [ecs\_cluster\_new](#input\_ecs\_cluster\_new) | optionally set to false, then no new ecs cluster will be created | `bool` | `true` | no |
 | <a name="input_event_name"></a> [event\_name](#input\_event\_name) | optionally define a custom value for the event name and tag=Name parameter<br>in aws\_ecs\_task\_definition. By default, it is defined as a construction from var.labels | `string` | `"default"` | no |
 | <a name="input_event_schedule_expression"></a> [event\_schedule\_expression](#input\_event\_schedule\_expression) | value for schedule\_expression parameter in aws\_cloudwatch\_event\_rule | `string` | `"rate(5 minutes)"` | no |
+| <a name="input_event_target_enabled"></a> [event\_target\_enabled](#input\_event\_target\_enabled) | using for disaster recovery design if we don't need to have second running task in parallel | `bool` | `true` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | Minimum required map of labels(tags) for creating aws resources | <pre>object({<br>    prefix    = string<br>    stack     = string<br>    component = string<br>    env       = string<br>  })</pre> | n/a | yes |
+| <a name="input_launch_type"></a> [launch\_type](#input\_launch\_type) | The launch type on which to run your service. Valid values are `EC2` and `FARGATE` | `string` | `"FARGATE"` | no |
 | <a name="input_permissions_boundary"></a> [permissions\_boundary](#input\_permissions\_boundary) | A permissions boundary ARN to apply to the roles that are created. | `string` | `""` | no |
 | <a name="input_scheduled_iam_role_name"></a> [scheduled\_iam\_role\_name](#input\_scheduled\_iam\_role\_name) | optionally define a custom value for the iam role name and tag=Name parameter<br>in aws\_iam\_role. By default, it is defined as a construction from var.labels | `string` | `"default"` | no |
 | <a name="input_scheduled_role_policy_arns"></a> [scheduled\_role\_policy\_arns](#input\_scheduled\_role\_policy\_arns) | A list of IAM Policy ARNs to attach to the generated task role. | `list(string)` | `[]` | no |
 | <a name="input_scheduled_role_policy_arns_default"></a> [scheduled\_role\_policy\_arns\_default](#input\_scheduled\_role\_policy\_arns\_default) | default arns list for scheduling task | `list` | <pre>[<br>  "arn:aws:iam::aws:policy/service-role/CloudWatchEventsBuiltInTargetExecutionAccess",<br>  "arn:aws:iam::aws:policy/service-role/CloudWatchEventsInvocationAccess"<br>]</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags | `map(string)` | `{}` | no |
 | <a name="input_task_config"></a> [task\_config](#input\_task\_config) | A map of nessesary fargete task config | <pre>object({<br>    task_definition_arn    = string<br>    task_role_arn          = string<br>    task_security_group_id = string<br>  })</pre> | n/a | yes |
+| <a name="input_task_count"></a> [task\_count](#input\_task\_count) | Number of instances of the task definition to place and keep running. | `number` | `1` | no |
 | <a name="input_vpc_config"></a> [vpc\_config](#input\_vpc\_config) | A map of nessesary vpc config | <pre>object({<br>    vpc_id     = string<br>    subnet_ids = list(string)<br>  })</pre> | n/a | yes |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_aws_ecs_cluster_arn"></a> [aws\_ecs\_cluster\_arn](#output\_aws\_ecs\_cluster\_arn) | ecs cluster arn |
+| <a name="output_aws_ecs_cluster_name"></a> [aws\_ecs\_cluster\_name](#output\_aws\_ecs\_cluster\_name) | ecs cluster name |
 <!-- END_TF_DOCS -->
