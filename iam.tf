@@ -42,14 +42,14 @@ resource "aws_iam_role_policy" "scheduled_iam_role_policies" {
           "iam:PassRole",
         ]
         Effect   = "Allow"
-        Resource = "${var.task_config.task_role_arn}"
+        Resource = "${var.task_role_arn}"
       },
       {
         Action = [
           "ecs:RunTask",
         ]
         Effect   = "Allow"
-        Resource = "${var.task_config.task_definition_arn}"
+        Resource = "${var.task_definition_arn}"
       },
     ]
   })
