@@ -15,6 +15,11 @@ variable "tags" {
   default     = {}
 }
 
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
+
 variable "event_name" {
   type        = string
   description = <<-EOT
@@ -39,6 +44,14 @@ variable "ecs_cluster_new" {
       optionally set to false, then no new ecs cluster will be created
     EOT
   default     = true
+}
+
+variable "ecs_cluster_arn" {
+  type        = string
+  description = <<-EOT
+      provide value if ecs_cluster_new == false
+    EOT
+  default     = null
 }
 
 variable "aws_ecs_cluster_containerInsights" {
@@ -96,6 +109,26 @@ variable "task_desired_count" {
   description = "Number of instances of the task definition to place and keep running."
   default     = 1
 }
+
+
+
+/*variable "task_config" {
+  type = object({
+    task_definition_arn    = string
+    task_role_arn          = string
+    task_security_group_id = string
+  })
+  description = "A map of nessesary fargete task config"
+}
+
+variable "vpc_config" {
+  type = object({
+    vpc_id     = string
+    subnet_ids = list(string)
+  })
+  description = "A map of nessesary vpc config"
+}
+*/
 
 variable "event_schedule_expression" {
   type        = string

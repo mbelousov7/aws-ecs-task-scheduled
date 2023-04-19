@@ -5,18 +5,11 @@ locals {
   ) : var.event_name
 
   ecs_cluster_name = var.ecs_cluster_name == "default" ? (
-    "${var.labels.prefix}-${var.labels.stack}-${var.labels.component}-cl-${data.aws_region.current.name}-${var.labels.env}"
+    "${var.labels.prefix}-${var.labels.stack}-${var.labels.component}-cl-${var.region}-${var.labels.env}"
   ) : var.ecs_cluster_name
 
-  ecs_cluster_arn = var.ecs_cluster_new == true ? join("", aws_ecs_cluster.ecs_cluster.*.arn) : join("", data.aws_ecs_cluster.ecs_cluster.*.arn)
+  ecs_cluster_arn = var.ecs_cluster_new == true ? join("", aws_ecs_cluster.ecs_cluster.*.arn) : var.ecs_cluster_arn
 
-}
-
-data "aws_region" "current" {}
-
-data "aws_ecs_cluster" "ecs_cluster" {
-  count        = var.ecs_cluster_new == true ? 0 : 1
-  cluster_name = local.ecs_cluster_name
 }
 
 resource "aws_cloudwatch_event_rule" "scheduled_task" {
