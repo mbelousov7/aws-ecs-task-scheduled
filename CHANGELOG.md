@@ -1,8 +1,14 @@
 # Changelog
 
+Make sure to update this file for each merge into *develop*, otherwise the build fails.
+
+The build relies on the latest version in this file.
+
+Latest versions must be at the top!
+
 ## [1.1.0] - 2023-04-19
 
-- add cahngelog
+- rename input vars
 
 ## [1.0.4] - 2022-12-02
 
